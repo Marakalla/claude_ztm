@@ -1,0 +1,872 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backwaters at 6am — an ambient sound pack</title>
+<meta name="description" content="Kerala backwaters, early 1980s, 6am. A continuous ambient sound pack of a canal waking before the heat and the noise.">
+<meta property="og:title" content="Backwaters at 6am">
+<meta property="og:description" content="Kerala backwaters, early 1980s, 6am. Mist, still water, and the unhurried life of the canal, recorded as one continuous ambient track.">
+<meta property="og:type" content="website">
+<link rel="preload" href="fonts/cormorant-300.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* ============ Fonts ============ */
+@font-face{
+  font-family:"Cormorant Garamond";
+  src:url("fonts/cormorant-300.woff2") format("woff2");
+  font-weight:300; font-style:normal; font-display:swap;
+}
+@font-face{
+  font-family:"Cormorant Garamond";
+  src:url("fonts/cormorant-400.woff2") format("woff2");
+  font-weight:400; font-style:normal; font-display:swap;
+}
+@font-face{
+  font-family:"Cormorant Garamond";
+  src:url("fonts/cormorant-400-italic.woff2") format("woff2");
+  font-weight:400; font-style:italic; font-display:swap;
+}
+@font-face{
+  font-family:"Source Sans 3";
+  src:url("fonts/sourcesans-400.woff2") format("woff2");
+  font-weight:400; font-style:normal; font-display:swap;
+}
+@font-face{
+  font-family:"Source Sans 3";
+  src:url("fonts/sourcesans-500.woff2") format("woff2");
+  font-weight:500; font-style:normal; font-display:swap;
+}
+
+/* ============ Tokens ============ */
+:root{
+  --ink-950:#0F1614; --canal-900:#141C1A; --canal-800:#1B2624; --canal-700:#24332F;
+  --line:#2E3E39;
+  --mist-100:#DDE3DA; --mist-200:#B4C0B9; --mist-400:#8A9A94;
+  --amber-400:#D8A45B; --amber-300:#E6BE85; --amber-glow:rgba(216,164,91,.16); --amber-600:#A97A3A;
+  --teal-500:#4F7A70;
+
+  --s-1:4px; --s-2:8px; --s-3:16px; --s-4:24px; --s-5:32px; --s-6:48px; --s-7:64px; --s-8:96px; --s-9:128px; --s-10:192px;
+
+  --t-press:100ms; --t-toggle:180ms; --t-hover:300ms; --t-scene:500ms;
+  --ease-out:cubic-bezier(0.22,0.61,0.36,1);
+
+  --font-display:"Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-body:"Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --gutter:16px;
+}
+@media (min-width:768px){ :root{ --gutter:32px; } }
+@media (min-width:1200px){ :root{ --gutter:48px; } }
+
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0;
+  background:var(--canal-900);
+  color:var(--mist-200);
+  font-family:var(--font-body);
+  font-weight:400;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+img,svg{display:block; max-width:100%;}
+a{color:var(--amber-400); text-decoration:none;}
+
+.container{
+  max-width:1120px;
+  margin:0 auto;
+  padding-left:var(--gutter);
+  padding-right:var(--gutter);
+}
+
+/* ============ Grain + vignette (fixed, static) ============ */
+.grain{
+  position:fixed; inset:0; pointer-events:none; z-index:5;
+  opacity:.06;
+  background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat:repeat;
+  background-size:200px 200px;
+}
+.vignette{
+  position:absolute; inset:0; pointer-events:none;
+  z-index:1;
+  background:radial-gradient(ellipse at center, transparent 45%, rgba(15,22,20,0.35) 100%);
+}
+
+/* ============ Focus ============ */
+:focus-visible{
+  outline:2px solid var(--amber-400);
+  outline-offset:4px;
+}
+
+/* ============ Hero ============ */
+.hero{
+  position:relative;
+  min-height:100svh;
+  display:flex;
+  align-items:flex-end;
+  overflow:hidden;
+  background:var(--canal-900);
+}
+.hero-visual{
+  position:absolute; inset:0; width:100%; height:100%;
+}
+.hero-visual svg{ width:100%; height:100%; }
+
+.mist-band{
+  animation:drift-mist 90s linear infinite alternate;
+  filter:blur(28px);
+}
+.mist-band.b2{ animation-duration:78s; }
+.mist-band.b3{ animation-duration:84s; }
+@keyframes drift-mist{
+  from{ transform:translateX(-3%); }
+  to{ transform:translateX(3%); }
+}
+.houseboat{
+  animation:drift-boat 40s linear infinite alternate;
+}
+@keyframes drift-boat{
+  from{ transform:translateX(-6px); }
+  to{ transform:translateX(6px); }
+}
+@media (prefers-reduced-motion:reduce){
+  .mist-band, .houseboat{ animation:none !important; }
+  .audio-toggle, .audio-toggle .label, .play-btn, .cta-button, .cta-button::before, .contact-link::after{
+    transition:none !important;
+  }
+}
+
+.hero-text{
+  position:relative;
+  z-index:2;
+  padding:0 var(--gutter) var(--s-7);
+  max-width:640px;
+}
+@media (min-width:768px){
+  .hero-text{ padding-bottom:var(--s-8); }
+}
+.title{
+  font-family:var(--font-display);
+  font-weight:300;
+  font-size:clamp(2.5rem, 1.5rem + 4.5vw, 5rem);
+  line-height:1.05;
+  letter-spacing:0.01em;
+  color:var(--mist-100);
+  margin:0 0 var(--s-4);
+}
+.subtitle{
+  font-family:var(--font-display);
+  font-weight:400;
+  font-size:clamp(1.25rem, 1.1rem + 0.8vw, 1.5rem);
+  line-height:1.4;
+  letter-spacing:0.01em;
+  color:var(--mist-200);
+  margin:0;
+  max-width:32ch;
+}
+
+/* ============ Audio toggle (fixed, global) ============ */
+.audio-toggle{
+  position:fixed;
+  right:var(--gutter);
+  bottom:calc(24px + env(safe-area-inset-bottom, 0px));
+  z-index:20;
+  display:inline-flex;
+  align-items:center;
+  gap:var(--s-2);
+  padding:var(--s-2) var(--s-4);
+  min-height:48px;
+  border:1px solid var(--amber-400);
+  border-radius:999px;
+  background:rgba(20,28,26,0.8);
+  backdrop-filter:blur(2px);
+  color:var(--amber-400);
+  font-family:var(--font-body);
+  font-weight:500;
+  font-size:0.875rem;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  cursor:pointer;
+  opacity:0.85;
+  transition:opacity var(--t-hover) var(--ease-out);
+}
+@media (hover:hover){
+  .audio-toggle:hover{ opacity:1; }
+}
+.audio-toggle:active{ opacity:0.7; transition-duration:var(--t-press); }
+.audio-toggle[aria-busy="true"]{ opacity:0.7; pointer-events:none; }
+.audio-toggle .label{
+  display:inline-block;
+  transition:opacity var(--t-toggle) var(--ease-out);
+}
+.audio-toggle .dot{
+  width:6px; height:6px; border-radius:50%;
+  background:var(--amber-400);
+  opacity:0.5;
+}
+.audio-toggle[aria-pressed="true"] .dot{ opacity:1; }
+
+/* ============ Scenes ============ */
+.scenes{ position:relative; background:var(--canal-900); }
+.scene{
+  position:relative;
+  min-height:90svh;
+  display:flex;
+  align-items:flex-end;
+  overflow:hidden;
+  border-top:1px solid var(--line);
+}
+@media (min-width:768px){
+  .scene{ min-height:100svh; }
+}
+.scene-visual{
+  position:absolute; inset:0; width:100%; height:100%;
+}
+.scene-visual svg{ width:100%; height:100%; }
+
+.scene-scrim{
+  position:absolute; inset:0;
+  background:linear-gradient(to top, rgba(15,22,20,0.75), transparent 60%);
+}
+.scene-text{
+  position:relative; z-index:2;
+  padding:0 var(--gutter) var(--s-7);
+  opacity:0;
+  transition:opacity var(--t-scene) linear;
+}
+@media (min-width:768px){
+  .scene-text{ padding-bottom:var(--s-8); }
+}
+.scene.is-visible .scene-text{ opacity:1; }
+@media (prefers-reduced-motion:reduce){
+  .scene-text{ opacity:1; transition:none; }
+}
+.scene-line{
+  font-family:var(--font-display);
+  font-weight:400;
+  font-style:italic;
+  font-size:clamp(1.5rem, 1.1rem + 1.8vw, 2.25rem);
+  line-height:1.4;
+  letter-spacing:0.005em;
+  color:var(--mist-100);
+  margin:0;
+  max-width:28ch;
+}
+
+/* ============ Preview player ============ */
+.preview{
+  background:var(--canal-900);
+  padding:var(--s-8) 0;
+  border-top:1px solid var(--line);
+  padding-bottom:calc(var(--s-8) + 48px + 24px);
+}
+@media (min-width:768px){
+  .preview{ padding:var(--s-9) 0; padding-bottom:calc(var(--s-9) + 48px + 24px); }
+}
+.preview-panel{
+  background:var(--canal-800);
+  border:1px solid var(--line);
+  border-radius:4px;
+  padding:var(--s-6) var(--s-5);
+  max-width:560px;
+}
+.eyebrow{
+  font-family:var(--font-body);
+  font-weight:500;
+  font-size:0.875rem;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--mist-400);
+  margin:0 0 var(--s-3);
+}
+.preview-row{
+  display:flex;
+  align-items:center;
+  gap:var(--s-4);
+}
+.play-btn{
+  flex:0 0 auto;
+  width:48px; height:48px;
+  border-radius:50%;
+  border:1px solid var(--amber-400);
+  background:transparent;
+  color:var(--amber-400);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  opacity:0.85;
+  transition:opacity var(--t-hover) var(--ease-out);
+}
+@media (hover:hover){
+  .play-btn:hover{ opacity:1; }
+}
+.play-btn:active{ opacity:0.7; transition-duration:var(--t-press); }
+.play-btn[aria-busy="true"]{ opacity:0.7; pointer-events:none; }
+.play-btn svg{ width:16px; height:16px; }
+.play-state{
+  font-family:var(--font-body);
+  font-size:0.875rem;
+  letter-spacing:0.02em;
+  color:var(--mist-400);
+}
+.scrub{
+  flex:1 1 auto;
+  height:2px;
+  background:var(--line);
+  position:relative;
+  border-radius:2px;
+  overflow:hidden;
+}
+.scrub-fill{
+  position:absolute; inset:0 auto 0 0; width:0%;
+  background:var(--amber-400);
+}
+.preview-note{
+  font-size:1.125rem;
+  color:var(--mist-200);
+  margin:var(--s-4) 0 0;
+  max-width:60ch;
+}
+
+/* ============ CTA ============ */
+.cta{
+  padding:var(--s-8) 0;
+  padding-bottom:calc(var(--s-8) + 48px + 24px);
+  border-top:1px solid var(--line);
+}
+@media (min-width:768px){
+  .cta{ padding-top:var(--s-9); padding-bottom:calc(var(--s-9) + 48px + 24px); }
+}
+.cta-inner{ max-width:640px; }
+.cta-headline{
+  font-family:var(--font-display);
+  font-weight:300;
+  font-size:clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+  line-height:1.2;
+  letter-spacing:0.01em;
+  color:var(--mist-100);
+  max-width:22ch;
+  margin:0 0 var(--s-5);
+}
+.cta-button{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:48px;
+  padding:var(--s-4) var(--s-5);
+  border:1px solid var(--amber-400);
+  border-radius:2px;
+  color:var(--mist-100);
+  font-family:var(--font-body);
+  font-weight:500;
+  font-size:0.875rem;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  overflow:hidden;
+  isolation:isolate;
+}
+.cta-button::before{
+  content:"";
+  position:absolute; inset:0; z-index:-1;
+  background:var(--amber-glow);
+  opacity:0;
+  transition:opacity var(--t-hover) var(--ease-out);
+}
+@media (hover:hover){
+  .cta-button:hover{ border-color:var(--amber-300); }
+  .cta-button:hover::before{ opacity:1; }
+}
+.cta-button:active{ opacity:0.7; transition-duration:var(--t-press); }
+.cta-note{
+  color:var(--mist-400);
+  font-size:0.875rem;
+  margin-top:var(--s-3);
+}
+
+/* ============ Licensing ============ */
+.licensing{
+  padding:var(--s-8) 0;
+  border-top:1px solid var(--line);
+  background:var(--canal-800);
+}
+@media (min-width:768px){ .licensing{ padding:var(--s-9) 0; } }
+.licensing-inner{ max-width:60ch; }
+.licensing-line{
+  font-size:1.125rem;
+  color:var(--mist-200);
+  margin:0 0 var(--s-3);
+}
+.contact-link{
+  position:relative;
+  color:var(--amber-400);
+  padding-bottom:2px;
+}
+.contact-link::after{
+  content:"";
+  position:absolute; left:0; right:0; bottom:0;
+  height:1px; background:var(--amber-400);
+  transform:translateY(0.25em) scaleX(0);
+  transform-origin:left;
+  transition:transform var(--t-hover) var(--ease-out);
+}
+@media (hover:hover){
+  .contact-link:hover::after{ transform:translateY(0.25em) scaleX(1); }
+}
+.contact-link:active{ opacity:0.7; }
+
+/* ============ Footer ============ */
+footer{
+  background:var(--ink-950);
+  padding:var(--s-8) 0;
+  border-top:1px solid var(--line);
+}
+@media (min-width:768px){
+  footer{ padding:var(--s-9) 0; }
+}
+.footer-note{
+  font-size:0.875rem;
+  color:var(--mist-400);
+  margin:0;
+}
+</style>
+</head>
+<body>
+
+<!-- Static grain overlay: tiled 200x200px noise pattern, per design-standard -->
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="hero-visual">
+    <svg viewBox="0 0 1200 900" preserveAspectRatio="xMidYMax slice" role="img" aria-label="A misty backwater canal just before sunrise, with a houseboat silhouette on still water.">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#2A3B38"/>
+          <stop offset="100%" stop-color="#55706A"/>
+        </linearGradient>
+        <radialGradient id="glow" cx="50%" cy="62%" r="45%">
+          <stop offset="0%" stop-color="rgba(216,164,91,0.20)"/>
+          <stop offset="100%" stop-color="rgba(216,164,91,0)"/>
+        </radialGradient>
+        <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#1B2A28"/>
+          <stop offset="100%" stop-color="#0F1614"/>
+        </linearGradient>
+      </defs>
+
+      <rect x="0" y="0" width="1200" height="600" fill="url(#sky)"/>
+      <rect x="0" y="0" width="1200" height="900" fill="url(#glow)"/>
+
+      <!-- distant palms: --teal-500, decorative only -->
+      <g fill="#4F7A70" opacity="0.55">
+        <path d="M120 560 q-6 -70 -40 -90 q30 4 42 40 q6 -50 -20 -80 q34 10 30 60 q10 -34 -6 -60 q26 14 16 56 l4 74z"/>
+        <path d="M1040 555 q8 -66 44 -84 q-28 6 -38 40 q-8 -48 18 -76 q-32 12 -26 58 q-12 -32 4 -56 q-24 16 -12 56 l10 62z"/>
+      </g>
+
+      <!-- mist bands -->
+      <rect class="mist-band b1" x="-60" y="470" width="1320" height="70" fill="rgba(157,175,168,0.18)"/>
+      <rect class="mist-band b2" x="-60" y="520" width="1320" height="50" fill="rgba(157,175,168,0.14)"/>
+      <rect class="mist-band b3" x="-60" y="440" width="1320" height="40" fill="rgba(157,175,168,0.10)"/>
+
+      <!-- houseboat silhouette: --ink-950 -->
+      <g class="houseboat">
+        <path d="M430 545 q0 -70 90 -78 h180 q90 8 90 78 z" fill="#0F1614"/>
+        <path d="M410 545 h420 l-24 26 h-372 z" fill="#0F1614"/>
+        <path d="M470 467 q60 -18 160 0" stroke="#0F1614" stroke-width="6" fill="none"/>
+      </g>
+
+      <!-- water -->
+      <rect x="0" y="571" width="1200" height="329" fill="url(#water)"/>
+      <g stroke="rgba(79,122,112,0.35)" stroke-width="2">
+        <path d="M0 620 q60 8 120 0 t120 0 t120 0 t120 0 t120 0 t120 0 t120 0 t120 0 t120 0" fill="none"/>
+        <path d="M0 680 q80 10 160 0 t160 0 t160 0 t160 0 t160 0 t160 0" fill="none"/>
+      </g>
+    </svg>
+  </div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <div class="hero-text">
+    <h1 class="title">Backwaters at 6am</h1>
+    <p class="subtitle">Mist lifts off still water as the first oar dips in.</p>
+  </div>
+</header>
+
+<!-- ============ SCENE SEQUENCE ============ -->
+<main class="scenes">
+
+  <section class="scene" data-cue-time="6" aria-label="Scene 1 of 5">
+    <div class="scene-visual">
+      <svg viewBox="0 0 1200 900" preserveAspectRatio="xMidYMax slice" role="img" aria-label="A quiet canal at first light, with mist low over the water and no one yet on the banks.">
+        <rect width="1200" height="900" fill="#24332F"/>
+        <rect y="500" width="1200" height="400" fill="#0F1614"/>
+        <rect y="440" width="1200" height="90" fill="rgba(157,175,168,0.16)"/>
+        <rect y="560" width="1200" height="40" fill="rgba(157,175,168,0.10)"/>
+      </svg>
+    </div>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="scene-scrim" aria-hidden="true"></div>
+    <div class="scene-text">
+      <p class="scene-line">The canal wakes before the birds do.</p>
+    </div>
+  </section>
+
+  <section class="scene" data-cue-time="18" aria-label="Scene 2 of 5">
+    <div class="scene-visual">
+      <svg viewBox="0 0 1200 900" preserveAspectRatio="xMidYMax slice" role="img" aria-label="A kettle steaming on the stern deck of a houseboat, moored at the water's edge.">
+        <rect width="1200" height="900" fill="#1B2624"/>
+        <rect y="520" width="1200" height="380" fill="#0F1614"/>
+        <path d="M760 560 q0 -46 60 -50 h100 q60 4 60 50 z" fill="#0F1614"/>
+        <circle cx="800" cy="540" r="5" fill="rgba(180,192,185,0.4)"/>
+        <path d="M800 536 q-4 -14 2 -22" stroke="rgba(221,227,218,0.4)" stroke-width="2" fill="none"/>
+      </svg>
+    </div>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="scene-scrim" aria-hidden="true"></div>
+    <div class="scene-text">
+      <p class="scene-line">A kettle ticks awake on someone's stern deck.</p>
+    </div>
+  </section>
+
+  <section class="scene" data-cue-time="34" aria-label="Scene 3 of 5">
+    <div class="scene-visual">
+      <svg viewBox="0 0 1200 900" preserveAspectRatio="xMidYMax slice" role="img" aria-label="An oar dipping into still water, rings spreading outward across the canal.">
+        <rect width="1200" height="900" fill="#141C1A"/>
+        <rect y="480" width="1200" height="420" fill="#0F1614"/>
+        <g stroke="rgba(79,122,112,0.4)" stroke-width="2" fill="none">
+          <circle cx="600" cy="560" r="20"/>
+          <circle cx="600" cy="560" r="38"/>
+          <circle cx="600" cy="560" r="58"/>
+        </g>
+        <path d="M600 500 l6 70" stroke="#0F1614" stroke-width="10" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="scene-scrim" aria-hidden="true"></div>
+    <div class="scene-text">
+      <p class="scene-line">Oars dip and pull, unhurried, leaving rings on the water.</p>
+    </div>
+  </section>
+
+  <section class="scene" data-cue-time="52" aria-label="Scene 4 of 5">
+    <div class="scene-visual">
+      <svg viewBox="0 0 1200 900" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Long palm shadows stretching across the canal in the early amber light.">
+        <rect width="1200" height="900" fill="#24332F"/>
+        <rect y="500" width="1200" height="400" fill="#0F1614"/>
+        <g fill="rgba(15,22,20,0.6)">
+          <path d="M-20 900 L260 560 L300 570 L0 900 Z"/>
+          <path d="M300 900 L620 540 L660 552 L340 900 Z"/>
+        </g>
+      </svg>
+    </div>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="scene-scrim" aria-hidden="true"></div>
+    <div class="scene-text">
+      <p class="scene-line">Palm shadows stretch long across water not yet warm.</p>
+    </div>
+  </section>
+
+  <section class="scene" data-cue-time="70" aria-label="Scene 5 of 5">
+    <div class="scene-visual">
+      <svg viewBox="0 0 1200 900" preserveAspectRatio="xMidYMax slice" role="img" aria-label="A distant view down the canal at sunrise, banks quiet, no one hurrying.">
+        <defs>
+          <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#2A3B38"/>
+            <stop offset="100%" stop-color="#55706A"/>
+          </linearGradient>
+        </defs>
+        <rect width="1200" height="560" fill="url(#sky2)"/>
+        <rect y="560" width="1200" height="340" fill="#0F1614"/>
+        <ellipse cx="600" cy="560" rx="500" ry="30" fill="rgba(216,164,91,0.16)"/>
+      </svg>
+    </div>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="scene-scrim" aria-hidden="true"></div>
+    <div class="scene-text">
+      <p class="scene-line">Somewhere a rooster answers, and no one hurries.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ AUDIO PREVIEW PLAYER ============ -->
+<section class="preview">
+  <div class="container">
+    <div class="preview-panel">
+      <p class="eyebrow">Hear it</p>
+      <div class="preview-row">
+        <button type="button" class="play-btn" id="previewBtn" aria-label="Play preview">
+          <svg id="previewIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </button>
+        <div class="scrub" aria-hidden="true">
+          <div class="scrub-fill" id="previewFill"></div>
+        </div>
+        <span class="play-state" id="previewState">Play preview</span>
+      </div>
+      <p class="preview-note">A 45-second excerpt of the continuous track, unedited. No track selector — this is the pack.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta">
+  <div class="container cta-inner">
+    <h2 class="cta-headline">Take this quiet with you, anywhere.</h2>
+    <a class="cta-button" id="ctaLink" href="#" rel="noopener">See it on Gumroad</a>
+    <p class="cta-note">Opens on Gumroad. No price shown here.</p>
+  </div>
+</section>
+
+<!-- ============ LICENSING ============ -->
+<section class="licensing">
+  <div class="container licensing-inner">
+    <p class="licensing-line">Licensing this for an app or a commercial project? Let's talk terms.</p>
+    <a class="contact-link" id="licensingLink" href="mailto:licensing@e-specialista.org?subject=Backwaters%20at%206am%20—%20licensing%20enquiry">licensing@e-specialista.org</a>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="container">
+    <p class="footer-note">Backwaters at 6am — an ambient sound pack. Recorded on location, unhurried.</p>
+  </div>
+</footer>
+
+<!-- ============ GLOBAL AUDIO TOGGLE ============ -->
+<button type="button" class="audio-toggle" id="audioToggle" aria-pressed="false">
+  <span class="dot" aria-hidden="true"></span>
+  <span class="label" id="audioToggleLabel">Listen</span>
+</button>
+
+<!-- Hidden audio elements -->
+<audio id="masterAudio" src="audio/ambient.mp3" preload="none" loop></audio>
+<audio id="previewAudio" src="audio/preview.mp3" preload="none"></audio>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------------------------------------------------
+   * Shared audio state: single source of truth.
+   * Both audio_toggle and the preview control read/write this,
+   * and only one of "master" / "preview" may be "playing" at once.
+   * ------------------------------------------------------- */
+  var state = {
+    playing: null // null | "master" | "preview"
+  };
+
+  var master = document.getElementById("masterAudio");
+  var preview = document.getElementById("previewAudio");
+
+  var toggleBtn = document.getElementById("audioToggle");
+  var toggleLabel = document.getElementById("audioToggleLabel");
+
+  var previewBtn = document.getElementById("previewBtn");
+  var previewState = document.getElementById("previewState");
+  var previewFill = document.getElementById("previewFill");
+
+  var INTERRUPT_FADE = 500;  // channel switch: master <-> preview (Contract: audio channel rule)
+  var LAYER_FADE = 1500;     // scene-cue resync duck/restore (Contract: layer crossfades, 1-2s / 1.5s standard)
+
+  // Per-element fade cancellation: each <audio> tracks its own in-flight rAF id,
+  // so two ramps on the same element can never fight each other.
+  function setVolumeRamp(el, from, to, ms, done){
+    if (el._fadeId) {
+      cancelAnimationFrame(el._fadeId);
+      el._fadeId = null;
+    }
+    var start = performance.now();
+    el.volume = from;
+    function step(now){
+      var t = Math.min(1, (now - start) / ms);
+      el.volume = from + (to - from) * t;
+      if (t < 1) {
+        el._fadeId = requestAnimationFrame(step);
+      } else {
+        el._fadeId = null;
+        if (done) { done(); }
+      }
+    }
+    el._fadeId = requestAnimationFrame(step);
+  }
+
+  function updateToggleUI(){
+    var active = state.playing === "master";
+    toggleBtn.setAttribute("aria-pressed", active ? "true" : "false");
+    toggleLabel.textContent = active ? "Listening…" : "Listen";
+  }
+
+  function updatePreviewUI(){
+    var active = state.playing === "preview";
+    previewState.textContent = active ? "Pause preview" : "Play preview";
+    previewBtn.setAttribute("aria-label", active ? "Pause preview" : "Play preview");
+    previewBtn.setAttribute("aria-pressed", active ? "true" : "false");
+    document.getElementById("previewIcon").innerHTML = active
+      ? '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>'
+      : '<path d="M8 5v14l11-7z"/>';
+  }
+
+  // Scroll-position sync: find the scene currently nearest the viewport
+  // centre and return its cue time, so a fresh master start "picks up"
+  // where the visitor has scrolled to, not from the top.
+  function currentSceneCueTime(){
+    var scenes = document.querySelectorAll(".scene");
+    var viewportCenter = window.innerHeight / 2;
+    var best = null, bestDist = Infinity;
+    for (var i = 0; i < scenes.length; i++) {
+      var rect = scenes[i].getBoundingClientRect();
+      if (rect.bottom <= 0 || rect.top >= window.innerHeight) { continue; }
+      var dist = Math.abs((rect.top + rect.height / 2) - viewportCenter);
+      if (dist < bestDist) {
+        bestDist = dist;
+        best = scenes[i];
+      }
+    }
+    if (!best) { return 0; }
+    var cue = parseFloat(best.getAttribute("data-cue-time"));
+    return isNaN(cue) ? 0 : cue;
+  }
+
+  function startMaster(){
+    if (master.readyState >= 1 && master.duration) {
+      master.currentTime = Math.min(currentSceneCueTime(), master.duration - 0.1);
+    } else {
+      // Duration not known yet (nothing loaded): seek once metadata arrives.
+      master.addEventListener("loadedmetadata", function once(){
+        master.removeEventListener("loadedmetadata", once);
+        master.currentTime = Math.min(currentSceneCueTime(), Math.max(master.duration - 0.1, 0));
+      });
+    }
+    master.volume = 0;
+    var p = master.play();
+    if (p && p.catch) { p.catch(function(){ /* playback blocked or asset missing; UI still reflects intent */ }); }
+    setVolumeRamp(master, 0, 1, INTERRUPT_FADE, null);
+  }
+
+  function startPreview(){
+    preview.volume = 0;
+    var p = preview.play();
+    if (p && p.catch) { p.catch(function(){}); }
+    setVolumeRamp(preview, 0, 1, INTERRUPT_FADE, null);
+  }
+
+  // Single-channel switch, sequenced: the outgoing stream fades out and is
+  // fully paused BEFORE the incoming stream starts (Contract: "master fades
+  // out over 500ms, THEN preview begins" — never running concurrently).
+  var channelBusy = false;
+
+  function switchChannel(target){
+    if (channelBusy || state.playing === target) { return; }
+    var outgoingKind = state.playing;
+    var outgoingEl = outgoingKind === "master" ? master : outgoingKind === "preview" ? preview : null;
+
+    function begin(){
+      state.playing = target;
+      updateToggleUI();
+      updatePreviewUI();
+      if (target === "master") { startMaster(); }
+      else if (target === "preview") { startPreview(); }
+      channelBusy = false;
+    }
+
+    if (outgoingEl) {
+      channelBusy = true;
+      toggleBtn.setAttribute("aria-busy", "true");
+      previewBtn.setAttribute("aria-busy", "true");
+      setVolumeRamp(outgoingEl, outgoingEl.volume || 1, 0, INTERRUPT_FADE, function(){
+        outgoingEl.pause();
+        toggleBtn.removeAttribute("aria-busy");
+        previewBtn.removeAttribute("aria-busy");
+        begin();
+      });
+    } else {
+      begin();
+    }
+  }
+
+  // ---- audio_toggle ----
+  toggleBtn.addEventListener("click", function(){
+    switchChannel(state.playing === "master" ? null : "master");
+  });
+
+  // ---- preview control ----
+  previewBtn.addEventListener("click", function(){
+    switchChannel(state.playing === "preview" ? null : "preview");
+  });
+
+  preview.addEventListener("timeupdate", function(){
+    if (preview.duration) {
+      previewFill.style.width = (preview.currentTime / preview.duration * 100) + "%";
+    }
+  });
+  preview.addEventListener("ended", function(){
+    // Nothing auto-resumes: master stays off until audio_toggle is pressed again.
+    state.playing = null;
+    previewFill.style.width = "0%";
+    updateToggleUI();
+    updatePreviewUI();
+  });
+
+  updateToggleUI();
+  updatePreviewUI();
+
+  /* ---------------------------------------------------------
+   * Scene entrance fades + scroll-position audio sync.
+   * Visual fade fires first; if the master is already playing,
+   * currentTime nudges toward the scene's cue point.
+   * ------------------------------------------------------- */
+  var scenes = Array.prototype.slice.call(document.querySelectorAll(".scene"));
+
+  // Resyncing playback position mid-scroll is a layer transition, not a
+  // channel switch: duck the master out, seek, and bring it back over
+  // LAYER_FADE (1.5s total) rather than jumping the audio with a hard cut.
+  var resyncing = false;
+  function resyncMasterTo(cue){
+    if (resyncing || master.paused) { return; }
+    resyncing = true;
+    var duckMs = Math.round(LAYER_FADE * 0.27); // ~400ms of the 1.5s budget
+    var restoreMs = LAYER_FADE - duckMs;
+    var targetVolume = master.volume || 1;
+    setVolumeRamp(master, targetVolume, 0, duckMs, function(){
+      master.currentTime = Math.min(cue, (master.duration || cue) - 0.1);
+      setVolumeRamp(master, 0, targetVolume, restoreMs, function(){
+        resyncing = false;
+      });
+    });
+  }
+
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+          entry.target.classList.add("is-visible");
+
+          if (state.playing === "master") {
+            var cue = parseFloat(entry.target.getAttribute("data-cue-time"));
+            if (!isNaN(cue) && master.duration && Math.abs(master.currentTime - cue) > 3) {
+              resyncMasterTo(cue);
+            }
+          }
+        }
+      });
+    }, { threshold: [0.5] });
+
+    scenes.forEach(function(s){ io.observe(s); });
+  } else {
+    // No IntersectionObserver support: show scenes at full opacity.
+    scenes.forEach(function(s){ s.classList.add("is-visible"); });
+  }
+
+  /* ---------------------------------------------------------
+   * CTA / licensing placeholders.
+   * These point nowhere real yet — see build notes.
+   * ------------------------------------------------------- */
+  document.getElementById("ctaLink").setAttribute("href", "https://gumroad.com/l/REPLACE_WITH_PRODUCT_SLUG");
+
+})();
+</script>
+
+</body>
+</html>
